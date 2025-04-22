@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   devise_for :users
   root 'playlists#index'
 
+  # Routes pour le profil
+  resource :profile, only: [:edit, :update]
+
   resources :playlists, only: [:index, :show] do
     resources :games, only: [:new, :create, :show] do
       post 'swipe', on: :member

@@ -21,10 +21,6 @@ class GamesController < ApplicationController
     @game.reload  # Forcer le rechargement du jeu
     @current_video = @game.current_video
     @score = @game.score
-
-    if @current_video.nil?
-      redirect_to playlists_path, notice: 'Jeu terminé ! Score final : ' + @score.to_s
-    end
   end
 
   def swipe
@@ -39,7 +35,7 @@ class GamesController < ApplicationController
     Rails.logger.info "Prochaine vidéo : #{next_video&.title}"
     
     if next_video.nil?
-      redirect_to playlists_path, notice: 'Jeu terminé ! Score final : ' + @game.score.to_s
+      redirect_to playlist_game_path(@playlist, @game), notice: 'Jeu terminé !'
     else
       flash[:notice] = direction == 'like' ? '👍 Liked!' : '👎 Disliked!'
       redirect_to playlist_game_path(@playlist, @game)

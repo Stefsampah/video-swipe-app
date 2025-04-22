@@ -51,20 +51,19 @@
       <% else %>
         <!-- Results Page -->
         <div class="text-center py-8 px-4">
-          <h1 class="text-2xl font-bold text-gray-800 mb-2"><%= @playlist.title %> - Résultats manche 1</h1>
+          <h1 class="text-2xl font-bold text-gray-800 mb-2"><%= @playlist.title %> - Résultats manche <%= @game.id %></h1>
           
           <div class="my-8">
-            <h2 class="text-xl text-gray-700 mb-4">Score Total</h2>
-            <div class="text-4xl font-bold text-blue-600 mb-6">
+            <div class="text-4xl font-bold text-purple-600 mb-6">
               What a Beam
             </div>
-            <div class="text-5xl font-bold text-blue-600 mb-8">
+            <div class="text-5xl font-bold text-purple-600 mb-8">
               5th Place !
             </div>
 
             <!-- User Avatar -->
             <div class="flex justify-center mb-6">
-              <div class="w-24 h-24 rounded-full bg-gray-300 overflow-hidden">
+              <div class="w-32 h-32 rounded-full bg-gray-300 overflow-hidden">
                 <% if current_user.avatar.attached? %>
                   <%= image_tag current_user.avatar, class: "w-full h-full object-cover" %>
                 <% else %>
