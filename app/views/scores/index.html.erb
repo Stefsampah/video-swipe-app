@@ -1,11 +1,40 @@
 <!-- Section des scores totaux -->
-<div class="min-h-screen bg-gray-100 py-8">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">Classement Global</h1>
+<div class="min-h-screen bg-gray-100 py-4 sm:py-8">
+  <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-8 px-2">Classement Global</h1>
     
     <!-- Tableau des scores totaux -->
     <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
-      <table class="min-w-full divide-y divide-gray-200">
+      <!-- Version mobile -->
+      <div class="block sm:hidden">
+        <div class="divide-y divide-gray-200">
+          <% @users.each_with_index do |user, index| %>
+            <div class="p-4">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center space-x-3">
+                  <span class="font-medium text-gray-900">#<%= index + 1 %></span>
+                  <% if user.avatar.attached? %>
+                    <%= image_tag user.avatar, class: "h-10 w-10 rounded-full object-cover" %>
+                  <% else %>
+                    <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                      <span class="text-gray-500 text-sm"><%= user.email[0].upcase %></span>
+                    </div>
+                  <% end %>
+                </div>
+                <div class="text-lg font-semibold text-indigo-600">
+                  <%= @total_scores[user.id] || 0 %> pts
+                </div>
+              </div>
+              <div class="text-sm text-gray-500 truncate">
+                <%= user.email %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Version desktop -->
+      <table class="hidden sm:table min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rang</th>
@@ -44,15 +73,45 @@
     </div>
 
     <!-- Section des scores par playlist -->
-    <h2 class="text-2xl font-bold text-gray-900 mb-6">Scores par Playlist</h2>
+    <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 px-2">Scores par Playlist</h2>
     
-    <div class="space-y-8">
+    <div class="space-y-6 sm:space-y-8">
       <% @scores_by_playlist.each do |playlist, scores| %>
         <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-          <div class="px-4 py-5 sm:px-6 bg-gray-50">
-            <h3 class="text-lg leading-6 font-medium text-gray-900"><%= playlist.title %></h3>
+          <div class="px-4 py-3 sm:px-6 sm:py-5 bg-gray-50">
+            <h3 class="text-base sm:text-lg font-medium text-gray-900"><%= playlist.title %></h3>
           </div>
-          <table class="min-w-full divide-y divide-gray-200">
+
+          <!-- Version mobile -->
+          <div class="block sm:hidden">
+            <div class="divide-y divide-gray-200">
+              <% scores.each_with_index do |score, index| %>
+                <div class="p-4">
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center space-x-3">
+                      <span class="font-medium text-gray-900">#<%= index + 1 %></span>
+                      <% if score.user.avatar.attached? %>
+                        <%= image_tag score.user.avatar, class: "h-10 w-10 rounded-full object-cover" %>
+                      <% else %>
+                        <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                          <span class="text-gray-500 text-sm"><%= score.user.email[0].upcase %></span>
+                        </div>
+                      <% end %>
+                    </div>
+                    <div class="text-lg font-semibold text-indigo-600">
+                      <%= score.points %> pts
+                    </div>
+                  </div>
+                  <div class="text-sm text-gray-500 truncate">
+                    <%= score.user.email %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Version desktop -->
+          <table class="hidden sm:table min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rang</th>
