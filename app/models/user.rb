@@ -4,8 +4,10 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  has_many :scores
+  has_many :games
   has_many :swipes
+  has_many :scores
   has_many :videos, through: :swipes
   has_many :playlists, through: :swipes
+  has_one_attached :avatar
 end

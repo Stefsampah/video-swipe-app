@@ -1,19 +1,19 @@
 <div class="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
   <div class="max-w-3xl mx-auto">
     <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-      <!-- Game Header -->
-      <div class="bg-blue-600 px-6 py-4">
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl font-bold text-white"><%= @playlist.title %></h2>
-          <div class="text-white">
-            <span class="text-lg font-semibold">Score: <%= @score %></span>
+      <% if @current_video %>
+        <!-- Game Header -->
+        <div class="bg-blue-600 px-6 py-4">
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-bold text-white"><%= @playlist.title %></h2>
+            <div class="text-white">
+              <span class="text-lg font-semibold">Score: <%= @score %></span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Video Player -->
-      <div class="p-6">
-        <% if @current_video %>
+        <!-- Video Player -->
+        <div class="p-6">
           <div class="aspect-w-16 aspect-h-9 mb-6">
             <iframe 
               class="w-full h-full rounded-lg"
@@ -47,22 +47,63 @@
               <% end %>
             </div>
           </div>
+        </div>
+      <% else %>
+        <!-- Results Page -->
+        <div class="text-center py-8 px-4">
+          <h1 class="text-2xl font-bold text-gray-800 mb-2"><%= @playlist.title %> - Résultats manche 1</h1>
+          
+          <div class="my-8">
+            <h2 class="text-xl text-gray-700 mb-4">Score Total</h2>
+            <div class="text-4xl font-bold text-blue-600 mb-6">
+              What a Beam
+            </div>
+            <div class="text-5xl font-bold text-blue-600 mb-8">
+              5th Place !
+            </div>
 
-          <!-- Debug Info -->
-          <div class="mt-4 text-sm text-gray-500">
-            <p>Video actuelle : <%= @current_video.title %></p>
-            <p>Vidéos swipées : <%= @game.swipes.count %></p>
-            <p>Score actuel : <%= @score %></p>
-            <p>Utilisateur : <%= current_user.email %></p>
+            <!-- User Avatar -->
+            <div class="flex justify-center mb-6">
+              <div class="w-24 h-24 rounded-full bg-gray-300 overflow-hidden">
+                <% if current_user.avatar.attached? %>
+                  <%= image_tag current_user.avatar, class: "w-full h-full object-cover" %>
+                <% else %>
+                  <svg class="w-full h-full text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                  </svg>
+                <% end %>
+              </div>
+            </div>
+
+            <p class="text-lg text-gray-600 mb-2">Me</p>
+            <div class="text-6xl font-bold text-purple-600 mb-8"><%= @score %></div>
+
+            <!-- Songs Results -->
+            <div class="max-w-md mx-auto bg-purple-600 rounded-lg overflow-hidden mb-8">
+              <div class="p-4">
+                <h3 class="text-white font-semibold mb-4">SONGS LIKED</h3>
+                <div class="space-y-3">
+                  <% @game.swipes.where(liked: true).each do |swipe| %>
+                    <div class="flex justify-between text-white">
+                      <span class="text-left"><%= swipe.video.title %></span>
+                      <span class="text-right">+1</span>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="space-y-4">
+              <%= link_to "Voir le Classement", scores_path, 
+                  class: "block w-full py-3 px-4 text-center font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition duration-150" %>
+              
+              <%= link_to "Suivant", playlists_path, 
+                  class: "block w-full py-3 px-4 text-center font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition duration-150" %>
+            </div>
           </div>
-        <% else %>
-          <div class="text-center py-12">
-            <h3 class="text-2xl font-bold text-gray-900 mb-4">Jeu terminé !</h3>
-            <p class="text-gray-600 mb-8">Votre score final : <%= @score %></p>
-            <%= link_to "Retour aux playlists", playlists_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
-          </div>
-        <% end %>
-      </div>
+        </div>
+      <% end %>
     </div>
   </div>
 </div> 
