@@ -1,0 +1,51 @@
+<div class="max-w-4xl mx-auto">
+  <div class="bg-white rounded-lg shadow-lg p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold"><%= @playlist.title %></h1>
+      <div class="text-gray-600">
+        Video <%= @game_state[:current_video_index] + 1 %> of <%= @playlist.videos.count %>
+      </div>
+    </div>
+
+    <div class="aspect-w-16 aspect-h-9 mb-6">
+      <iframe 
+        id="youtube-player"
+        class="w-full h-full rounded-lg"
+        src="https://www.youtube.com/embed/<%= @current_video.youtube_id %>?autoplay=1"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <div class="flex justify-center space-x-8">
+      <button 
+        onclick="swipe('left')"
+        class="bg-red-500 text-white px-8 py-4 rounded-full hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
+        <span class="text-2xl">👎</span>
+      </button>
+      <button 
+        onclick="swipe('right')"
+        class="bg-green-500 text-white px-8 py-4 rounded-full hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+        <span class="text-2xl">👍</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+function swipe(direction) {
+  fetch('<%= swipe_playlist_games_path(@playlist) %>', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+    },
+    body: JSON.stringify({ direction: direction })
+  }).then(response => {
+    if (response.redirected) {
+      window.location.href = response.url;
+    }
+  });
+}
+</script>

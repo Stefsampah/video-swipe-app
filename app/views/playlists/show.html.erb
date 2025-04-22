@@ -1,0 +1,72 @@
+<div class="container mt-4">
+  <h1 class="mb-4"><%= @playlist.title %></h1>
+  <p class="mb-4"><%= @playlist.description %></p>
+
+  <div class="video-container">
+    <% if @current_video %>
+      <div class="video-wrapper" data-controller="swipe">
+        <div class="video-frame">
+          <iframe 
+            width="100%" 
+            height="500" 
+            src="https://www.youtube.com/embed/<%= @current_video.youtube_id %>?autoplay=1" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+          </iframe>
+        </div>
+        
+        <div class="swipe-actions mt-3">
+          <button class="btn btn-danger btn-lg me-3" data-action="click->swipe#dislike">
+            <i class="fas fa-times"></i> Dislike
+          </button>
+          <button class="btn btn-success btn-lg" data-action="click->swipe#like">
+            <i class="fas fa-heart"></i> Like
+          </button>
+        </div>
+      </div>
+    <% else %>
+      <div class="alert alert-info">
+        Vous avez terminé toutes les vidéos de cette playlist !
+      </div>
+      <%= link_to "Retour aux playlists", playlists_path, class: "btn btn-primary" %>
+    <% end %>
+  </div>
+</div>
+
+<style>
+.video-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.video-wrapper {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.video-frame {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.swipe-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.btn-lg {
+  padding: 10px 30px;
+  font-size: 1.2rem;
+}
+
+.btn-danger, .btn-success {
+  transition: transform 0.2s;
+}
+
+.btn-danger:hover, .btn-success:hover {
+  transform: scale(1.1);
+}
+</style>

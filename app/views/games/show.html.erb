@@ -1,0 +1,68 @@
+<div class="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-3xl mx-auto">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+      <!-- Game Header -->
+      <div class="bg-blue-600 px-6 py-4">
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-bold text-white"><%= @playlist.title %></h2>
+          <div class="text-white">
+            <span class="text-lg font-semibold">Score: <%= @score %></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video Player -->
+      <div class="p-6">
+        <% if @current_video %>
+          <div class="aspect-w-16 aspect-h-9 mb-6">
+            <iframe 
+              class="w-full h-full rounded-lg"
+              src="https://www.youtube.com/embed/<%= @current_video.youtube_id %>?autoplay=0&origin=<%= request.base_url %>&enablejsapi=1"
+              title="<%= @current_video.title %>"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </div>
+
+          <!-- Swipe Buttons -->
+          <div class="flex justify-center space-x-8">
+            <div class="flex space-x-8">
+              <%= button_to swipe_playlist_game_path(@playlist, @game), 
+                          method: :post, 
+                          params: { direction: 'dislike', user_id: current_user.id }, 
+                          class: "flex items-center justify-center w-16 h-16 rounded-full bg-red-500 text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" do %>
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              <% end %>
+
+              <%= button_to swipe_playlist_game_path(@playlist, @game), 
+                          method: :post, 
+                          params: { direction: 'like', user_id: current_user.id }, 
+                          class: "flex items-center justify-center w-16 h-16 rounded-full bg-green-500 text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" do %>
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Debug Info -->
+          <div class="mt-4 text-sm text-gray-500">
+            <p>Video actuelle : <%= @current_video.title %></p>
+            <p>Vidéos swipées : <%= @game.swipes.count %></p>
+            <p>Score actuel : <%= @score %></p>
+            <p>Utilisateur : <%= current_user.email %></p>
+          </div>
+        <% else %>
+          <div class="text-center py-12">
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Jeu terminé !</h3>
+            <p class="text-gray-600 mb-8">Votre score final : <%= @score %></p>
+            <%= link_to "Retour aux playlists", playlists_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div> 
