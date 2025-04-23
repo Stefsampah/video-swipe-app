@@ -1,20 +1,24 @@
-<div class="min-h-screen bg-gray-100 flex items-center justify-center">
-  <div class="max-w-md w-full space-y-8 p-8 bg-white rounded-xl shadow-lg">
-    <div class="text-center">
-      <h2 class="text-3xl font-extrabold text-gray-900">
-        Démarrer un nouveau jeu
-      </h2>
-      <p class="mt-2 text-sm text-gray-600">
-        Prêt à jouer avec la playlist <%= @playlist.title %> ?
-      </p>
-    </div>
+<div class="min-h-screen bg-gray-100 py-4 sm:py-8">
+  <div class="max-w-md mx-auto px-2 sm:px-6 lg:px-8">
+    <div class="bg-white shadow-lg overflow-hidden sm:rounded-lg">
+      <div class="bg-indigo-600 px-4 py-4 sm:px-6">
+        <h2 class="text-lg sm:text-xl font-bold text-white">Nouvelle Partie</h2>
+      </div>
 
-    <div class="mt-8">
-      <%= form_with(model: [@playlist, @game], local: true) do |f| %>
-        <div class="flex justify-center">
-          <%= f.submit "Commencer", class: "inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+      <div class="p-4 sm:p-6">
+        <div class="text-center">
+          <p class="text-base sm:text-lg text-gray-600 mb-8">
+            Prêt à jouer avec la playlist <span class="font-semibold text-gray-900"><%= @playlist.title %></span> ?
+          </p>
+
+          <%= form_with(model: [@playlist, @game], local: true) do |f| %>
+            <div class="flex justify-center">
+              <%= f.submit "Commencer", 
+                  class: "inline-flex items-center px-6 py-3 text-base sm:text-lg font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transform hover:scale-105 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+            </div>
+          <% end %>
         </div>
-      <% end %>
+      </div>
     </div>
   </div>
 </div> 
