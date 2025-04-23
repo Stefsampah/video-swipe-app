@@ -2,17 +2,26 @@ class Game < ApplicationRecord
   belongs_to :user
   belongs_to :playlist
   has_many :swipes, dependent: :destroy
-  has_many :videos, through: :playlist
+  has_many :videos, through: :swipes
 
   validates :user, presence: true
   validates :playlist, presence: true
 
   def current_video
-    # Récupérer tous les IDs des vidéos déjà swipées
-    swiped_video_ids = swipes.pluck(:video_id)
-    
-    # Trouver la première vidéo qui n'a pas été swipée
-    videos.where.not(id: swiped_video_ids).first
+    # Récupérer la première vidéo de la playlist qui n'a pas encore été swipée
+    playlist.videos.where.not(id: swipes.select(:video_id)).first
+  end
+
+  def next_video
+    # Recharger les associations pour s'assurer d'avoir les dernières données
+    reload
+    current_video
+  end
+
+  def completed?
+    # Le jeu est terminé quand toutes les vidéos ont été swipées
+    reload
+    swipes.count >= playlist.videos.count
   end
 
   def swipe(direction)
@@ -26,7 +35,7 @@ class Game < ApplicationRecord
     # Créer le swipe avec l'utilisateur
     new_swipe = swipes.create!(
       video: video,
-      liked: direction == 'like',
+      action: direction,
       user: user
     )
     Rails.logger.info "Swipe créé: #{new_swipe.inspect}"
@@ -35,17 +44,10 @@ class Game < ApplicationRecord
     reload
 
     # Retourner la prochaine vidéo
-    next_video = current_video
-    Rails.logger.info "Prochaine vidéo: #{next_video&.title}"
     next_video
   end
 
-  def completed?
-    # Vérifier si toutes les vidéos ont été swipées
-    videos.count == swipes.count
-  end
-
   def score
-    swipes.where(liked: true).count
+    swipes.where(action: 'like').count * 2 + swipes.where(action: 'dislike').count
   end
 end 

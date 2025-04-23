@@ -18,7 +18,7 @@ class Score < ApplicationRecord
       {
         user_id: swipe.user_id,
         points: swipe.total_swipes,
-        badge: "Top engager du jour"
+        badges: ["Top engager du jour"]
       }
     end
   end
@@ -26,9 +26,9 @@ class Score < ApplicationRecord
   def self.calculate_best_ratio_scores
     # Récupérer les likes et dislikes par utilisateur
     interactions = Swipe.group(:user_id)
-                       .select('user_id, 
-                              SUM(CASE WHEN action = "like" THEN 1 ELSE 0 END) as likes,
-                              SUM(CASE WHEN action = "dislike" THEN 1 ELSE 0 END) as dislikes')
+                       .select("user_id, 
+                              SUM(CASE WHEN action = 'like' THEN 1 ELSE 0 END) as likes,
+                              SUM(CASE WHEN action = 'dislike' THEN 1 ELSE 0 END) as dislikes")
     
     interactions.map do |interaction|
       total = interaction.likes + interaction.dislikes
@@ -46,7 +46,7 @@ class Score < ApplicationRecord
         user_id: interaction.user_id,
         points: points,
         ratio: ratio.round(2),
-        badge: ratio.between?(40, 60) ? "Best Ratio du jour" : nil
+        badges: ratio.between?(40, 60) ? ["Best Ratio du jour"] : []
       }
     end.compact
   end
@@ -54,9 +54,9 @@ class Score < ApplicationRecord
   def self.calculate_wise_critic_scores
     # Récupérer les likes et dislikes par utilisateur
     interactions = Swipe.group(:user_id)
-                       .select('user_id, 
-                              SUM(CASE WHEN action = "like" THEN 1 ELSE 0 END) as likes,
-                              SUM(CASE WHEN action = "dislike" THEN 1 ELSE 0 END) as dislikes')
+                       .select("user_id, 
+                              SUM(CASE WHEN action = 'like' THEN 1 ELSE 0 END) as likes,
+                              SUM(CASE WHEN action = 'dislike' THEN 1 ELSE 0 END) as dislikes")
     
     interactions.map do |interaction|
       total = interaction.likes + interaction.dislikes
@@ -76,7 +76,7 @@ class Score < ApplicationRecord
         user_id: interaction.user_id,
         points: points,
         gap: gap.round(2),
-        badge: gap <= 20 ? "Wise Critic du jour" : nil
+        badges: gap <= 20 ? ["Wise Critic du jour"] : []
       }
     end.compact
   end
@@ -94,10 +94,17 @@ class Score < ApplicationRecord
         user_id = score[:user_id]
         combined_scores[user_id] ||= { points: 0, badges: [] }
         combined_scores[user_id][:points] += score[:points]
-        combined_scores[user_id][:badges] << score[:badge] if score[:badge]
+        combined_scores[user_id][:badges].concat(score[:badges])
       end
     end
 
-    combined_scores
+    # Convertir en tableau pour la vue
+    combined_scores.map do |user_id, data|
+      {
+        user_id: user_id,
+        points: data[:points],
+        badges: data[:badges]
+      }
+    end
   end
 end

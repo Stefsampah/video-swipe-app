@@ -1,112 +1,42 @@
-<div class="min-h-screen bg-gray-100 py-4 sm:py-8">
-  <div class="max-w-4xl mx-auto px-2 sm:px-6 lg:px-8">
-    <div class="bg-white shadow-lg overflow-hidden sm:rounded-lg">
-      <% if @current_video %>
-        <!-- Game Header -->
-        <div class="bg-indigo-600 px-4 py-4 sm:px-6">
-          <div class="flex justify-between items-center">
-            <h2 class="text-lg sm:text-xl font-bold text-white"><%= @playlist.title %></h2>
-            <div class="text-white">
-              <span class="text-base sm:text-lg font-semibold">Score: <%= @score %></span>
-            </div>
-          </div>
+<div class="min-h-screen bg-gray-100 py-6">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <% if @game.current_video %>
+      <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="aspect-w-16 aspect-h-9">
+          <iframe 
+            class="w-full h-full"
+            src="https://www.youtube.com/embed/<%= @game.current_video.youtube_id %>"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
         </div>
 
-        <!-- Video Player -->
-        <div class="p-4 sm:p-6">
-          <div class="aspect-w-16 aspect-h-9 mb-6">
-            <iframe 
-              class="w-full h-full rounded-lg"
-              src="https://www.youtube.com/embed/<%= @current_video.youtube_id %>?autoplay=0&origin=<%= request.base_url %>&enablejsapi=1"
-              title="<%= @current_video.title %>"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen>
-            </iframe>
-          </div>
+        <div class="p-6">
+          <h2 class="text-2xl font-bold text-gray-900 mb-4"><%= @game.current_video.title %></h2>
+          <% if @game.current_video.respond_to?(:description) && @game.current_video.description.present? %>
+            <p class="text-gray-600 mb-6"><%= @game.current_video.description %></p>
+          <% end %>
 
-          <!-- Swipe Buttons -->
-          <div class="flex justify-center space-x-6 sm:space-x-8">
-            <%= button_to swipe_playlist_game_path(@playlist, @game), 
-                        method: :post, 
-                        params: { direction: 'dislike', user_id: current_user.id }, 
-                        class: "flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-red-500 text-white hover:bg-red-600 transform hover:scale-105 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" do %>
-              <svg class="w-7 h-7 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            <% end %>
-
-            <%= button_to swipe_playlist_game_path(@playlist, @game), 
-                        method: :post, 
-                        params: { direction: 'like', user_id: current_user.id }, 
-                        class: "flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-indigo-500 text-white hover:bg-indigo-600 transform hover:scale-105 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" do %>
-              <svg class="w-7 h-7 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-            <% end %>
+          <div class="flex justify-center space-x-4">
+            <%= button_to "👎", swipe_playlist_game_path(@playlist, @game, action: "dislike"), 
+                method: :post, 
+                class: "px-6 py-3 bg-red-500 text-white rounded-full hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2" %>
+            
+            <%= button_to "👍", swipe_playlist_game_path(@playlist, @game, action: "like"), 
+                method: :post, 
+                class: "px-6 py-3 bg-green-500 text-white rounded-full hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2" %>
           </div>
         </div>
-      <% else %>
-        <!-- Results Page -->
-        <div class="text-center py-6 sm:py-8 px-4">
-          <h1 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-            <%= @playlist.title %> - Résultats
-          </h1>
-          
-          <div class="my-6 sm:my-8">
-            <div class="text-3xl sm:text-4xl font-bold text-indigo-600 mb-4 sm:mb-6">
-              What a Beam!
-            </div>
-            <div class="text-4xl sm:text-5xl font-bold text-indigo-600 mb-6 sm:mb-8">
-              5th Place!
-            </div>
-
-            <!-- User Avatar -->
-            <div class="flex justify-center mb-6">
-              <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gray-300 overflow-hidden">
-                <% if current_user.avatar.attached? %>
-                  <%= image_tag current_user.avatar, class: "w-full h-full object-cover" %>
-                <% else %>
-                  <div class="w-full h-full flex items-center justify-center bg-gray-300">
-                    <span class="text-2xl sm:text-3xl text-gray-500">
-                      <%= current_user.email[0].upcase %>
-                    </span>
-                  </div>
-                <% end %>
-              </div>
-            </div>
-
-            <p class="text-base sm:text-lg text-gray-600 mb-2">Me</p>
-            <div class="text-5xl sm:text-6xl font-bold text-indigo-600 mb-6 sm:mb-8">
-              <%= @score %>
-            </div>
-
-            <!-- Songs Results -->
-            <div class="max-w-md mx-auto bg-indigo-600 rounded-lg overflow-hidden mb-6 sm:mb-8">
-              <div class="p-4">
-                <h3 class="text-white font-semibold mb-4">SONGS LIKED</h3>
-                <div class="space-y-3">
-                  <% @game.swipes.where(liked: true).each do |swipe| %>
-                    <div class="flex justify-between text-white">
-                      <span class="text-left truncate"><%= swipe.video.title %></span>
-                      <span class="text-right ml-2">+1</span>
-                    </div>
-                  <% end %>
-                </div>
-              </div>
-            </div>
-
-            <!-- Navigation Buttons -->
-            <div class="space-y-4">
-              <%= link_to "Voir le Classement", scores_path, 
-                  class: "block w-full py-3 px-4 text-center font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-all transform hover:scale-105" %>
-              
-              <%= link_to "Retour aux Playlists", playlists_path, 
-                  class: "block w-full py-3 px-4 text-center font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all transform hover:scale-105" %>
-            </div>
-          </div>
-        </div>
-      <% end %>
-    </div>
+      </div>
+    <% else %>
+      <div class="text-center">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Félicitations !</h2>
+        <p class="text-gray-600 mb-6">Vous avez terminé toutes les vidéos de cette playlist.</p>
+        <%= link_to "Retour aux playlists", playlists_path, 
+            class: "px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" %>
+      </div>
+    <% end %>
   </div>
 </div> 

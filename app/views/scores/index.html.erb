@@ -8,9 +8,10 @@
       <div class="px-4 py-5 sm:p-6">
         <h2 class="text-xl font-semibold text-gray-900 mb-4">Scores Totaux</h2>
         <div class="grid grid-cols-1 gap-4">
-          <% @users.each do |user| %>
+          <% @total_scores.each do |score| %>
             <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div class="flex items-center">
+                <% user = User.find(score[:user_id]) %>
                 <% if user.avatar.attached? %>
                   <%= image_tag user.avatar, class: "h-10 w-10 rounded-full" %>
                 <% else %>
@@ -23,10 +24,10 @@
               <div class="flex items-center space-x-4">
                 <div class="text-right">
                   <p class="text-sm text-gray-500">Score Total</p>
-                  <p class="text-lg font-semibold text-gray-900"><%= @total_scores[user.id]&.dig(:points) || 0 %></p>
+                  <p class="text-lg font-semibold text-gray-900"><%= score[:points] %></p>
                 </div>
                 <div class="flex space-x-2">
-                  <% @total_scores[user.id]&.dig(:badges)&.each do |badge| %>
+                  <% score[:badges].each do |badge| %>
                     <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
                       <%= badge %>
                     </span>
@@ -46,13 +47,13 @@
         <div class="px-4 py-5 sm:p-6">
           <h2 class="text-xl font-semibold text-gray-900 mb-4">Top Engager</h2>
           <div class="space-y-4">
-            <% @top_engager_scores.each do |user_id, data| %>
+            <% @top_engager_scores.each do |score| %>
               <div class="flex items-center justify-between">
-                <span class="text-gray-700"><%= User.find(user_id).email %></span>
+                <span class="text-gray-700"><%= User.find(score[:user_id]).email %></span>
                 <div class="flex items-center space-x-2">
-                  <span class="font-semibold"><%= data[:points] %> pts</span>
+                  <span class="font-semibold"><%= score[:points] %> pts</span>
                   <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                    <%= data[:badges].first %>
+                    <%= score[:badges].first %>
                   </span>
                 </div>
               </div>
@@ -66,13 +67,13 @@
         <div class="px-4 py-5 sm:p-6">
           <h2 class="text-xl font-semibold text-gray-900 mb-4">Best Ratio</h2>
           <div class="space-y-4">
-            <% @best_ratio_scores.each do |user_id, data| %>
+            <% @best_ratio_scores.each do |score| %>
               <div class="flex items-center justify-between">
-                <span class="text-gray-700"><%= User.find(user_id).email %></span>
+                <span class="text-gray-700"><%= User.find(score[:user_id]).email %></span>
                 <div class="flex items-center space-x-2">
-                  <span class="font-semibold"><%= data[:points] %> pts</span>
+                  <span class="font-semibold"><%= score[:points] %> pts</span>
                   <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                    <%= data[:badges].first %>
+                    <%= score[:badges].first %>
                   </span>
                 </div>
               </div>
@@ -86,13 +87,13 @@
         <div class="px-4 py-5 sm:p-6">
           <h2 class="text-xl font-semibold text-gray-900 mb-4">Wise Critic</h2>
           <div class="space-y-4">
-            <% @wise_critic_scores.each do |user_id, data| %>
+            <% @wise_critic_scores.each do |score| %>
               <div class="flex items-center justify-between">
-                <span class="text-gray-700"><%= User.find(user_id).email %></span>
+                <span class="text-gray-700"><%= User.find(score[:user_id]).email %></span>
                 <div class="flex items-center space-x-2">
-                  <span class="font-semibold"><%= data[:points] %> pts</span>
+                  <span class="font-semibold"><%= score[:points] %> pts</span>
                   <span class="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
-                    <%= data[:badges].first %>
+                    <%= score[:badges].first %>
                   </span>
                 </div>
               </div>

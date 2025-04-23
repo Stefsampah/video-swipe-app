@@ -7,7 +7,9 @@ Rails.application.routes.draw do
 
   resources :playlists, only: [:index, :show] do
     resources :games, only: [:new, :create, :show] do
-      post 'swipe', on: :member
+      member do
+        post :swipe
+      end
     end
   end
 
