@@ -2,7 +2,7 @@ class Game < ApplicationRecord
   belongs_to :user
   belongs_to :playlist
   has_many :swipes, dependent: :destroy
-  has_many :videos, through: :swipes
+  has_many :videos, through: :playlist # Associe toutes les vidéos de la playlist directement
 
   validates :user, presence: true
   validates :playlist, presence: true
@@ -15,23 +15,38 @@ class Game < ApplicationRecord
     playlist.videos.where.not(id: swiped_video_ids).first
   end
 
+  # def next_video
+  #   # Recharger les associations pour s'assurer d'avoir les dernières données
+  #   reload
+  #   current_video
+  # end
+
   def next_video
-    # Recharger les associations pour s'assurer d'avoir les dernières données
-    reload
-    current_video
+    videos.where.not(id: swipes.pluck(:video_id)).first
   end
+  
 
   def completed?
-    # Le jeu est terminé quand toutes les vidéos ont été swipées
     reload
-    swipes.count >= playlist.videos.count
+    total_videos = playlist.videos.pluck(:id)
+    swiped_videos = swipes.pluck(:video_id).uniq
+  
+    Rails.logger.info "=== DIAGNOSTIC ==="
+    Rails.logger.info "Total vidéos dans la playlist : #{total_videos.count} | IDs : #{total_videos}"
+    Rails.logger.info "Vidéos swipées : #{swiped_videos.count} | IDs : #{swiped_videos}"
+    Rails.logger.info "Match exact : #{(total_videos - swiped_videos).empty?}"
+  
+    # Condition de complétion
+    swiped_videos.count >= total_videos.count
   end
-
+  
+  
   def swipe(direction)
     Rails.logger.info "Début du swipe avec direction : #{direction}"
     return if completed?
   
     video = current_video
+    Rails.logger.info "Vidéo actuelle avant swipe : #{video&.title} | ID : #{video&.id}"
     Rails.logger.info "Vidéos déjà swipées : #{swipes.pluck(:video_id)}"
     Rails.logger.info "Vidéo actuelle : #{video&.title}"
   
@@ -62,7 +77,7 @@ class Game < ApplicationRecord
       )
   
       Rails.logger.info "Swipe créé avec succès : #{new_swipe.inspect}"
-  
+      Rails.logger.info "Swipe créé : #{swipe.inspect}"
       # Recharger les données pour s'assurer de la mise à jour des associations
       reload
   

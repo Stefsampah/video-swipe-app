@@ -19,7 +19,8 @@ class GamesController < ApplicationController
 
   def show
     if @game.completed?
-      redirect_to playlists_path, notice: "Vous avez terminé cette playlist !"
+      # Afficher une vue des résultats lorsque le jeu est terminé
+      render :results
     end
   end
   
