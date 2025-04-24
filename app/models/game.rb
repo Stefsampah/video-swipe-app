@@ -8,8 +8,11 @@ class Game < ApplicationRecord
   validates :playlist, presence: true
 
   def current_video
-    # Récupérer la première vidéo de la playlist qui n'a pas encore été swipée
-    playlist.videos.where.not(id: swipes.select(:video_id)).first
+    # Récupérer tous les IDs des vidéos déjà swipées
+    swiped_video_ids = swipes.pluck(:video_id)
+    
+    # Trouver la première vidéo qui n'a pas été swipée
+    playlist.videos.where.not(id: swiped_video_ids).first
   end
 
   def next_video
@@ -25,27 +28,52 @@ class Game < ApplicationRecord
   end
 
   def swipe(direction)
-    Rails.logger.info "Début du swipe avec direction: #{direction}"
+    Rails.logger.info "Début du swipe avec direction : #{direction}"
     return if completed?
-
+  
     video = current_video
-    Rails.logger.info "Vidéo actuelle: #{video&.title}"
+    Rails.logger.info "Vidéos déjà swipées : #{swipes.pluck(:video_id)}"
+    Rails.logger.info "Vidéo actuelle : #{video&.title}"
+  
+    # Assurez-vous qu'une vidéo existe avant de continuer
     return unless video
 
-    # Créer le swipe avec l'utilisateur
-    new_swipe = swipes.create!(
-      video: video,
-      action: direction,
-      user: user
-    )
-    Rails.logger.info "Swipe créé: #{new_swipe.inspect}"
+  
+    begin
+      # Définir la valeur pour le champ 'liked' en fonction de la direction
+      liked_value = direction == "like"
+      # Ajout du débogueur pour inspecter les valeurs
+      byebug
+      liked_value
+      direction
+      video.inspect
+      params.inspect
 
-    # Forcer le rechargement des associations
-    reload
-
-    # Retourner la prochaine vidéo
-    next_video
+       # Ajouter les logs ici pour inspecter les valeurs
+    Rails.logger.info "Valeur de liked_value : #{liked_value}"
+    Rails.logger.info "Direction : #{direction}"
+    Rails.logger.info "Vidéo actuelle : #{video&.title}"
+      # Créer le swipe avec toutes les données nécessaires
+      new_swipe = swipes.create!(
+        video: video,
+        action: direction,
+        liked: liked_value,
+        user: user
+      )
+  
+      Rails.logger.info "Swipe créé avec succès : #{new_swipe.inspect}"
+  
+      # Recharger les données pour s'assurer de la mise à jour des associations
+      reload
+  
+      # Retourner la prochaine vidéo non swipée
+      next_video
+    rescue ActiveRecord::RecordInvalid => e
+      Rails.logger.error "Erreur lors de la création du Swipe : #{e.message}"
+      nil
+    end
   end
+  
 
   def score
     swipes.where(action: 'like').count * 2 + swipes.where(action: 'dislike').count

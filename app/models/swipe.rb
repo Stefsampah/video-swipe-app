@@ -7,3 +7,4 @@ class Swipe < ApplicationRecord
   validates :liked, inclusion: { in: [true, false] }
   validates :action, presence: true, inclusion: { in: %w[like dislike] }
 end 
+

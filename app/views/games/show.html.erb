@@ -20,11 +20,11 @@
           <% end %>
 
           <div class="flex justify-center space-x-4">
-            <%= button_to "👎", swipe_playlist_game_path(@playlist, @game, action: "dislike"), 
+            <%= button_to "👎", swipe_playlist_game_path(@playlist, @game, direction: "dislike"), 
                 method: :post, 
                 class: "px-6 py-3 bg-red-500 text-white rounded-full hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2" %>
             
-            <%= button_to "👍", swipe_playlist_game_path(@playlist, @game, action: "like"), 
+            <%= button_to "👍", swipe_playlist_game_path(@playlist, @game, direction: "like"), 
                 method: :post, 
                 class: "px-6 py-3 bg-green-500 text-white rounded-full hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2" %>
           </div>
