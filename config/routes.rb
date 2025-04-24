@@ -10,8 +10,12 @@ Rails.application.routes.draw do
       member do
         post :swipe
       end
+      collection do
+        get :play, to: "games#play", as: :play
+      end
     end
   end
+  
 
   resources :scores, only: [:index, :show]
   resources :swipes, only: [:create]

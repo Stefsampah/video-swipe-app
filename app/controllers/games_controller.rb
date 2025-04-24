@@ -19,10 +19,13 @@ class GamesController < ApplicationController
 
   def show
     if @game.completed?
-      # Afficher une vue des résultats lorsque le jeu est terminé
-      render :results
+      @score = Score.find_by(user: current_user, playlist: @game.playlist)
+      render :results # Assurez-vous que ce fichier `results.html.erb` existe
+    else
+      # Affichez la vue normale du jeu
     end
   end
+  
   
   def swipe
     # Étape 1 : Log des paramètres reçus
@@ -67,6 +70,17 @@ class GamesController < ApplicationController
       redirect_to playlist_game_path(@game.playlist, @game), notice: "Vidéo #{action == 'like' ? 'like' : 'dislike'} !"
     else
       redirect_to playlists_path, notice: "Félicitations ! Vous avez terminé la playlist !"
+    end
+  end
+  
+  def play
+    @playlist = Playlist.find(params[:playlist_id])
+    @game = Game.new(playlist: @playlist, user: current_user)
+  
+    if @game.save
+      redirect_to playlist_game_path(@playlist, @game), notice: "Nouvelle partie lancée !"
+    else
+      redirect_to playlists_path, alert: "Impossible de lancer une nouvelle partie."
     end
   end
   
