@@ -19,12 +19,28 @@ class GamesController < ApplicationController
 
   def show
     if @game.completed?
+      # Récupérer les informations nécessaires
       @score = Score.find_by(user: current_user, playlist: @game.playlist)
-      render :results # Assurez-vous que ce fichier `results.html.erb` existe
+      @playlist = @game.playlist
+  
+      # Calcul des vidéos likées, non likées et swipées
+      swipes = @game.swipes.includes(:video)
+      @liked_videos = swipes.where(action: "like").map(&:video)
+      @not_liked_videos = swipes.where(action: "dislike").map(&:video)
+      @swiped_videos = swipes.map(&:video) # Récupère toutes les vidéos swipées (likées + non likées)
+  
+      # Calcul de la position dans le classement
+      scores = Score.where(playlist: @playlist).order(points: :desc)
+      @position = scores.pluck(:user_id).index(current_user.id) + 1
+  
+      # Affiche la vue des résultats
+      render :results
     else
-      # Affichez la vue normale du jeu
+      # Continuer le jeu (affichez la vue normale du jeu)
+      render :show
     end
   end
+    
   
   
   def swipe

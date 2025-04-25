@@ -1,29 +1,65 @@
-<div class="max-w-4xl mx-auto">
-  <div class="bg-white rounded-lg shadow-lg p-6">
-    <h1 class="text-3xl font-bold mb-6">Game Results</h1>
-    
-    <div class="mb-8">
-      <h2 class="text-xl font-semibold mb-2"><%= @playlist.title %></h2>
-      <p class="text-gray-600 mb-4"><%= @playlist.description %></p>
-    </div>
+<div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
+  <!-- Section What a Beam ! -->
+  <div class="text-center mb-8">
+    <p class="text-2xl font-bold text-green-600">What a Beam!</p>
+    <p class="text-gray-600">You've made amazing progress in this playlist.</p>
+  </div>
 
-    <div class="bg-blue-50 p-6 rounded-lg mb-8">
-      <h3 class="text-xl font-semibold mb-4">Your Score</h3>
-      <div class="text-4xl font-bold text-blue-600">
-        <%= @score.points %> points
-      </div>
-      <p class="text-gray-600 mt-2">
-        You liked <%= pluralize(@score.points, 'video') %> out of <%= @playlist.videos.count %>
-      </p>
+  <!-- Section Your Score -->
+  <div class="flex items-center justify-center bg-blue-50 p-6 rounded-lg mb-8">
+    <div class="mr-6">
+      <!-- Image circulaire -->
+      <%= image_tag current_user.avatar, class: "h-24 w-24 rounded-full border-4 border-blue-600" %>
     </div>
-
-    <div class="flex justify-between">
-      <%= link_to "Play Again", play_playlist_games_path(@playlist), 
-          class: "bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700" %>
-      <%= link_to "View All Scores", scores_path, 
-          class: "bg-gray-600 text-white px-6 py-3 rounded hover:bg-gray-700" %>
+  <div>
+      <!-- Score et Position -->
+      <h2 class="text-4xl font-bold text-blue-600 mb-2"><%= @score.points %> points</h2>
+      <p class="text-xl font-semibold text-purple-600">Position: <%= @position %>th Place!</p>
     </div>
   </div>
+
+  <!-- Section Interactif: Songs Liked et Songs No Liked -->
+  <div class="flex mb-8">
+    <!-- SONGS LIKED -->
+    <div id="songs-liked" class="toggle-section w-1/2 p-4 bg-indigo-600 text-white rounded-lg mr-4 cursor-pointer active-section">
+      <h3 class="text-lg font-semibold mb-4 text-center">SONGS LIKED</h3>
+      <div class="details hidden">
+        <ul>
+          <% if @liked_videos.present? %>
+            <% @liked_videos.each do |video| %>
+              <li class="text-sm"><strong><%= video.title %></strong> - <%= video.points %> points</li>
+            <% end %>
+          <% else %>
+            <li>No liked songs yet.</li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SONGS NO LIKED -->
+    <div id="songs-not-liked" class="toggle-section w-1/2 p-4 bg-gray-200 text-gray-700 rounded-lg ml-4 cursor-pointer">
+      <h3 class="text-lg font-semibold mb-4 text-center">SONGS NO LIKED</h3>
+      <div class="details hidden">
+        <ul>
+          <% if @not_liked_videos.present? %>
+            <% @not_liked_videos.each do |video| %>
+              <li class="text-sm"><strong><%= video.title %></strong> - <%= video.points %> points</li>
+            <% end %>
+          <% else %>
+            <li>No disliked songs yet.</li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Boutons au bas -->
+  <div class="text-center mb-4">
+    <%= link_to "View Party Leaderboard", scores_path, 
+        class: "bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700" %>
+  </div>
+  <div class="text-center">
+    <%= link_to "Next", playlist_games_path(@playlist), 
+        class: "bg-gray-600 text-white px-6 py-3 rounded hover:bg-gray-700" %>
+  </div>
 </div>
-
-

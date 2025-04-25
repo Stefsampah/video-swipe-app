@@ -35,3 +35,44 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+.text-clamp {
+  display: -webkit-box; /* Nécessaire pour activer le mode multi-ligne */
+  -webkit-box-orient: vertical; /* Orientation pour le modèle flex */
+  overflow: hidden; /* Masquer le texte excédentaire */
+  -webkit-line-clamp: 3; /* Propriété avec préfixe pour Safari */
+  line-clamp: 3; /* Propriété standard */
+}
+
+
+
+.video-section {
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.video-section:hover {
+  background-color: #4b0082; /* Violet indigo au survol */
+  color: #ffffff;
+}
+
+.toggle-section {
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.toggle-section:hover {
+  background-color: #4b0082; /* Indigo foncé au survol */
+  color: #ffffff;
+}
+
+.toggle-section.active-section {
+  background-color: #4b0082; /* Indigo actif */
+  color: #ffffff;
+}
+
+.details {
+  display: none;
+}
+
+.details.visible {
+  display: block;
+}
