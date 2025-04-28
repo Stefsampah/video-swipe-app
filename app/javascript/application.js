@@ -4,20 +4,19 @@ import "controllers"
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    const sections = document.querySelectorAll('.toggle-section');
-  
-    sections.forEach(section => {
-      section.addEventListener('click', () => {
-        // Supprimez la classe active de toutes les sections
-        sections.forEach(s => {
-          s.classList.remove('active-section');
-          s.querySelector('.details').classList.remove('visible');
-        });
-  
-        // Ajoutez la classe active à la section cliquée
-        section.classList.add('active-section');
-        section.querySelector('.details').classList.add('visible');
+  const sections = document.querySelectorAll('.toggle-section');
+
+  sections.forEach(section => {
+    section.addEventListener('click', () => {
+      // Désactive toutes les sections
+      sections.forEach(s => {
+        s.classList.remove('active-section');
+        s.querySelector('.details').classList.remove('visible');
       });
+
+      // Active la section cliquée
+      section.classList.add('active-section');
+      section.querySelector('.details').classList.add('visible');
     });
   });
-  
+});

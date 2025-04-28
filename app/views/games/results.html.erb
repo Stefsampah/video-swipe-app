@@ -18,12 +18,13 @@
     </div>
   </div>
 
-  <!-- Section Interactif: Songs Liked et Songs No Liked -->
+  <div class="max-w-4xl mx-auto bg-purple-800 rounded-lg shadow-lg p-6">
+  <!-- Section Interactive: Songs Liked et Songs No Liked -->
   <div class="flex mb-8">
     <!-- SONGS LIKED -->
     <div id="songs-liked" class="toggle-section w-1/2 p-4 bg-indigo-600 text-white rounded-lg mr-4 cursor-pointer active-section">
       <h3 class="text-lg font-semibold mb-4 text-center">SONGS LIKED</h3>
-      <div class="details hidden">
+      <div class="details visible">
         <ul>
           <% if @liked_videos.present? %>
             <% @liked_videos.each do |video| %>

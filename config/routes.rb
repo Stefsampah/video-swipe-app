@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     resources :games, only: [:new, :create, :show] do
       member do
         post :swipe
+        get :results
       end
       collection do
         get :play, to: "games#play", as: :play

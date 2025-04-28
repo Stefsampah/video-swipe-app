@@ -76,3 +76,7 @@
 .details.visible {
   display: block;
 }
+
+.bg-purple-800 {
+  background-color: #4b0082; /* Violet foncé pour le fond général */
+}

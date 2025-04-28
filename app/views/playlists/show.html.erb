@@ -4,7 +4,11 @@
 
   <div class="video-container">
     <% if @current_video %>
-      <div class="video-wrapper" data-controller="swipe">
+      <div class="video-wrapper" 
+           data-controller="swipe"
+           data-swipe-video-id="<%= @current_video.id %>"
+           data-swipe-playlist-id="<%= @playlist.id %>"
+           data-swipe-game-id="<%= @game.id %>">
         <div class="video-frame">
           <iframe 
             width="100%" 
