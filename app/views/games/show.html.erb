@@ -1,11 +1,29 @@
-<div class="min-h-screen bg-gray-100 py-6">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen bg-gray-900 py-4 sm:py-8">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- En-tête avec logo -->
+    <div class="text-center mb-8">
+      <div class="flex items-center justify-center mb-6">
+        <div class="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center">
+          <div class="w-8 h-8 text-cyan-400">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5.14v14l11-7-11-7z"/>
+            </svg>
+          </div>
+        </div>
+        <h1 class="text-4xl font-bold text-white ml-4">
+          <%= @playlist.title %>
+        </h1>
+      </div>
+    </div>
+
     <% if @game.current_video %>
-      <div class="bg-white shadow rounded-lg overflow-hidden">
+      <!-- Carte principale -->
+      <div class="bg-blue-600 rounded-lg overflow-hidden transform hover:scale-105 transition-all duration-300">
+        <!-- Vidéo -->
         <div class="aspect-w-16 aspect-h-9">
           <iframe 
             class="w-full h-full"
-            src="https://www.youtube.com/embed/<%= @game.current_video.youtube_id %>"
+            src="https://www.youtube.com/embed/<%= @game.current_video.youtube_id %>?autoplay=1"
             title="YouTube video player"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -13,30 +31,79 @@
           </iframe>
         </div>
 
-        <div class="p-6">
-          <h2 class="text-2xl font-bold text-gray-900 mb-4"><%= @game.current_video.title %></h2>
+        <!-- Informations et actions -->
+        <div class="p-8">
+          <h2 class="text-2xl font-light text-white mb-4">
+            <%= @game.current_video.title %>
+          </h2>
           <% if @game.current_video.respond_to?(:description) && @game.current_video.description.present? %>
-            <p class="text-gray-600 mb-6"><%= @game.current_video.description %></p>
+            <p class="text-white/80 mb-6">
+              <%= @game.current_video.description %>
+            </p>
           <% end %>
 
-          <div class="flex justify-center space-x-4">
-            <%= button_to "👎", swipe_playlist_game_path(@playlist, @game, direction: "dislike"), 
+          <!-- Boutons de swipe -->
+          <div class="flex justify-center space-x-6 mt-8">
+            <%= button_to swipe_playlist_game_path(@playlist, @game, direction: "dislike"), 
                 method: :post, 
-                class: "px-6 py-3 bg-red-500 text-white rounded-full hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2" %>
+                class: "group px-8 py-4 bg-white/20 rounded-full hover:bg-white/30 transition-all focus:outline-none transform hover:scale-105" do %>
+              <div class="flex items-center">
+                <span class="text-2xl mr-2">👎</span>
+                <span class="text-white font-medium">Passer</span>
+              </div>
+            <% end %>
             
-            <%= button_to "👍", swipe_playlist_game_path(@playlist, @game, direction: "like"), 
+            <%= button_to swipe_playlist_game_path(@playlist, @game, direction: "like"), 
                 method: :post, 
-                class: "px-6 py-3 bg-green-500 text-white rounded-full hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2" %>
+                class: "group px-8 py-4 bg-white/20 rounded-full hover:bg-white/30 transition-all focus:outline-none transform hover:scale-105" do %>
+              <div class="flex items-center">
+                <span class="text-2xl mr-2">👍</span>
+                <span class="text-white font-medium">J'aime</span>
+              </div>
+            <% end %>
           </div>
         </div>
       </div>
     <% else %>
-      <div class="text-center">
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">Félicitations !</h2>
-        <p class="text-gray-600 mb-6">Vous avez terminé toutes les vidéos de cette playlist.</p>
-        <%= link_to "Retour aux playlists", playlists_path, 
-            class: "px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" %>
+      <!-- Message de fin -->
+      <div class="bg-blue-600 rounded-lg p-8 text-center transform hover:scale-105 transition-all duration-300">
+        <h2 class="text-3xl font-light text-white mb-4">Félicitations !</h2>
+        <p class="text-xl text-white/80 mb-8">
+          Vous avez terminé toutes les vidéos de cette playlist.
+        </p>
+        <%= link_to playlists_path, 
+            class: "inline-flex items-center px-8 py-4 text-lg font-medium rounded-full text-white bg-white/20 hover:bg-white/30 transition-all focus:outline-none transform hover:scale-105" do %>
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Retour aux playlists
+        <% end %>
       </div>
     <% end %>
+
+    <!-- Lien retour -->
+    <div class="text-center mt-6">
+      <%= link_to playlists_path, 
+          class: "inline-flex items-center text-white/80 hover:text-white transition-colors" do %>
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Retour aux playlists
+      <% end %>
+    </div>
   </div>
-</div> 
+</div>
+
+<style>
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+</style> 
